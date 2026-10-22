@@ -1,0 +1,21 @@
+# Initial experiment settings; no training code is included yet.
+seed: 42
+
+data:
+  root: data
+  image_size: 28
+  channels: 1
+  classes: 10
+  normalize_min: -1.0
+  normalize_max: 1.0
+
+model:
+  latent_dim: 100
+  label_encoding: one_hot
+
+training:
+  batch_size: 128
+  learning_rate: 0.0002
+  betas: [0.5, 0.999]
+  epochs: 50
+  loss: BCEWithLogitsLoss
