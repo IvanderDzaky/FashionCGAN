@@ -4,9 +4,9 @@
 
 | Anggota | Area utama | Berkas yang direncanakan |
 |---|---|---|
-| 1 — Model Architect | Rancangan, Generator/Discriminator, uji model | `src/fashion_cgan/models.py`, `tests/test_models.py`, `docs/architecture.md` |
-| 2 — Data & Training | Dataset, DataLoader, training loop, eksperimen | `src/fashion_cgan/data.py`, `src/fashion_cgan/train.py`, `configs/default.yaml`, `tests/test_data.py` |
-| 3 — Evaluation & Docs | Evaluasi, visualisasi, dokumentasi, laporan | `src/fashion_cgan/evaluate.py`, `src/fashion_cgan/utils.py`, `docs/`, `README.md`, `evidence/member-3/` |
+| 1 — Ivander Dzaky Khairullah — Prompt Engineer & Model Architect | Rancangan, Generator/Discriminator, uji model | `src/fashion_cgan/models.py`, `tests/test_models.py`, `docs/architecture.md` |
+| 2 — Muhammad Ragil — Data Pipeline & Training Engineer | Dataset, DataLoader, training loop, eksperimen | `src/fashion_cgan/data.py`, `src/fashion_cgan/train.py`, `configs/default.yaml`, `tests/test_data.py` |
+| 3 — Silmi Sila Nia Uma — Documentation & Evaluation Engineer | Evaluasi, visualisasi, dokumentasi, laporan | `src/fashion_cgan/evaluate.py`, `src/fashion_cgan/utils.py`, `docs/`, `README.md`, `evidence/silmi-sila-nia-uma/` |
 
 ## Aturan kolaborasi
 

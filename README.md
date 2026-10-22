@@ -26,15 +26,15 @@ Rincian ada di [`docs/architecture.md`](docs/architecture.md) dan urutan kerja/p
 
 ## Tim
 
-1. Model Architect — model dan unit test.
-2. Data & Training Engineer — dataset, training, eksperimen.
-3. Evaluation & Documentation Engineer — evaluasi, visualisasi, dokumentasi.
+1. Ivander Dzaky Khairullah — Prompt Engineer & Model Architect: model dan unit test.
+2. Muhammad Ragil — Data Pipeline & Training Engineer: dataset, training, eksperimen.
+3. Silmi Sila Nia Uma — Documentation & Evaluation Engineer: evaluasi, visualisasi, dokumentasi.
 
 Aturan kolaborasi dan gerbang implementasi dicatat dalam rencana implementasi.
 
 ## Log AI dan evidence
 
-Semua anggota memakai format yang sama dari berbagai platform AI. Salin [`docs/ai-logs/session-template.md`](docs/ai-logs/session-template.md), lalu simpan bukti asli di `evidence/member-1/`, `evidence/member-2/`, atau `evidence/member-3/`. Jangan membuat log atau hasil pengujian fiktif; panduan lengkap: [`docs/ai-logs/README.md`](docs/ai-logs/README.md).
+Semua anggota memakai format yang sama dari berbagai platform AI. Salin [`docs/ai-logs/session-template.md`](docs/ai-logs/session-template.md), lalu simpan bukti asli di `evidence/ivander-dzaky-khairullah/`, `evidence/muhammad-ragil/`, atau `evidence/silmi-sila-nia-uma/`. Jangan membuat log atau hasil pengujian fiktif; panduan lengkap: [`docs/ai-logs/README.md`](docs/ai-logs/README.md).
 
 ## Data dan artefak
 

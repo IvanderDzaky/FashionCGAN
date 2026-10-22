@@ -12,8 +12,8 @@ Gunakan `session-template.md` lintas OpenCode, Hermes, ChatGPT, Claude, Gemini, 
 
 ## Bukti
 
-- `evidence/member-1/`: bukti Anggota 1.
-- `evidence/member-2/`: bukti Anggota 2.
-- `evidence/member-3/`: bukti Anggota 3.
+- `evidence/ivander-dzaky-khairullah/`: bukti Ivander Dzaky Khairullah.
+- `evidence/muhammad-ragil/`: bukti Muhammad Ragil.
+- `evidence/silmi-sila-nia-uma/`: bukti Silmi Sila Nia Uma.
 - Format bebas: ekspor Markdown/HTML/TXT atau tautan percakapan dengan akses tim. Tambahkan nama platform/model pada nama berkas bila berguna.
 - Jangan menyimpan API key, token, data pribadi sensitif, atau percakapan yang tidak berhak dibagikan.
