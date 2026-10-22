@@ -3,7 +3,7 @@
 ## Metadata
 
 - Tanggal: 2026-10-23
-- Anggota: 1 — Ivander Dzaky Khairullah
+- Anggota: Ivander Dzaky Khairullah (Anggota 1)
 - Platform AI: OpenCode
 - Model: cx/gpt-6-luna
 - Target modul: Inisialisasi proyek FashionCGAN
