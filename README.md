@@ -4,7 +4,7 @@ Proyek akademik untuk membangun conditional GAN (cGAN) MLP dari komponen dasar P
 
 ## Status
 
-Inisialisasi proyek. Model, data pipeline, training, dan evaluasi belum diimplementasikan.
+Generator dan Discriminator MLP conditional, preprocessing Fashion-MNIST, training cGAN, serta generate image grid sudah diimplementasikan beserta unit test. Evaluasi belum diimplementasikan.
 
 ## Persiapan lingkungan
 
