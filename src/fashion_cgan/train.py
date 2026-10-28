@@ -5,6 +5,7 @@ import csv
 import random
 from pathlib import Path
 
+import numpy as np
 import torch
 import yaml
 from torch import nn
@@ -26,10 +27,17 @@ def train(
 
     seed = config["seed"]
     random.seed(seed)
+    np.random.seed(seed)
     torch.manual_seed(seed)
     data_config, model_config, training_config = config["data"], config["model"], config["training"]
     device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
-    train_loader, _ = get_dataloaders(data_config["root"], training_config["batch_size"], download)
+    train_loader, _ = get_dataloaders(
+        data_config["root"],
+        training_config["batch_size"],
+        download,
+        num_workers=training_config.get("num_workers", 0),
+        seed=seed,
+    )
 
     generator = Generator(model_config["latent_dim"], data_config["classes"]).to(device)
     discriminator = Discriminator(data_config["classes"]).to(device)
@@ -109,9 +117,12 @@ def main() -> None:
     parser.add_argument("--config", default="configs/default.yaml")
     parser.add_argument("--epochs", type=int)
     parser.add_argument("--max-batches", type=int, help="Limit batches per epoch for a smoke run")
+    parser.add_argument("--download", action=argparse.BooleanOptionalAction, default=True, help="Download Fashion-MNIST if missing")
     parser.add_argument("--device")
     args = parser.parse_args()
-    history = train(args.config, epochs=args.epochs, max_batches=args.max_batches, device=args.device)
+    history = train(
+        args.config, epochs=args.epochs, max_batches=args.max_batches, device=args.device, download=args.download
+    )
     print(f"Training complete: {len(history)} epoch(s); latest metrics: {history[-1]}")
 
 

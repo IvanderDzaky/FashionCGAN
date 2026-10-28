@@ -61,3 +61,20 @@ def test_fashion_mnist_batches_match_model_contract(fake_torchvision):
 def test_get_dataloaders_rejects_invalid_batch_size(fake_torchvision):
     with pytest.raises(ValueError):
         get_dataloaders(batch_size=0)
+
+
+def test_get_dataloaders_rejects_negative_num_workers(fake_torchvision):
+    with pytest.raises(ValueError):
+        get_dataloaders(num_workers=-1)
+
+
+def test_get_dataloaders_seed_reproduces_shuffle(fake_torchvision):
+    def order(loader):
+        return torch.cat([images.view(images.shape[0], -1) for images, _ in loader])
+
+    train_a, _ = get_dataloaders(batch_size=1, seed=7)
+    train_b, _ = get_dataloaders(batch_size=1, seed=7)
+    train_c, _ = get_dataloaders(batch_size=1, seed=8)
+
+    assert torch.equal(order(train_a), order(train_b))
+    assert not torch.equal(order(train_a), order(train_c))
