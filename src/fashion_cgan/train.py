@@ -20,8 +20,9 @@ def train(
     max_batches: int | None = None,
     device: str | torch.device | None = None,
     download: bool = True,
+    resume: str | Path | None = None,
 ) -> list[dict[str, float | int]]:
-    """Train both models; save per-epoch checkpoints and CSV metrics."""
+    """Train both models from scratch or a checkpoint; save per-epoch checkpoints and CSV metrics."""
     with Path(config_path).open(encoding="utf-8") as config_file:
         config = yaml.safe_load(config_file)
 
@@ -51,8 +52,16 @@ def train(
     output_dir.mkdir(parents=True, exist_ok=True)
     history: list[dict[str, float | int]] = []
     epoch_count = epochs if epochs is not None else training_config["epochs"]
+    start_epoch = 1
+    if resume is not None:
+        checkpoint = torch.load(resume, map_location=device, weights_only=False)
+        generator.load_state_dict(checkpoint["generator"])
+        discriminator.load_state_dict(checkpoint["discriminator"])
+        generator_optimizer.load_state_dict(checkpoint["generator_optimizer"])
+        discriminator_optimizer.load_state_dict(checkpoint["discriminator_optimizer"])
+        start_epoch = checkpoint["epoch"] + 1
 
-    for epoch in range(1, epoch_count + 1):
+    for epoch in range(start_epoch, start_epoch + epoch_count):
         generator.train()
         discriminator.train()
         d_loss_sum = g_loss_sum = 0.0
@@ -118,10 +127,16 @@ def main() -> None:
     parser.add_argument("--epochs", type=int)
     parser.add_argument("--max-batches", type=int, help="Limit batches per epoch for a smoke run")
     parser.add_argument("--download", action=argparse.BooleanOptionalAction, default=True, help="Download Fashion-MNIST if missing")
+    parser.add_argument("--resume", help="Checkpoint to resume training from; continues at the next epoch")
     parser.add_argument("--device")
     args = parser.parse_args()
     history = train(
-        args.config, epochs=args.epochs, max_batches=args.max_batches, device=args.device, download=args.download
+        args.config,
+        epochs=args.epochs,
+        max_batches=args.max_batches,
+        device=args.device,
+        download=args.download,
+        resume=args.resume,
     )
     print(f"Training complete: {len(history)} epoch(s); latest metrics: {history[-1]}")
 
