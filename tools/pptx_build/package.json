@@ -1,0 +1,12 @@
+{
+  "name": "fashion-cgan-pptx",
+  "private": true,
+  "description": "Build script untuk presentasi laporan FashionCGAN (pptxgenjs).",
+  "type": "commonjs",
+  "scripts": {
+    "build": "node build_deck.js"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
+  }
+}

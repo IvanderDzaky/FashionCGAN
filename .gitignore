@@ -37,3 +37,6 @@ laporan/*.blg
 laporan/*.out
 laporan/*.synctex.gz
 laporan/main.pdf
+
+# Node (pptx build)
+tools/pptx_build/node_modules/
