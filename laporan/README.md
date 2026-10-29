@@ -15,6 +15,7 @@ Laporan memakai template resmi (`Template _Penulisan_Latex`) tanpa mengubah marg
 | `Hasil-Pembahasan.tex` | Bab IV — dataset, loss, progres, sampel, keragaman, akurasi, pembahasan |
 | `Kesimpulan.tex` | Bab V — kesimpulan, keterbatasan, saran |
 | `Lampiran.tex` | Struktur repo, perintah reproduksi, bukti sesi |
+| `Laporan.md` | Versi Markdown laporan (ringkas, gaya README: teori, teknis, hasil, jobdesk) |
 | `References.bib` | 11 referensi, semuanya disitasi |
 | `main.bbl` | Hasil BibTeX (disertakan agar Overleaf langsung benar) |
 | `Laporan-...pdf` | Hasil kompilasi; nama berkas mengikuti judul laporan |
