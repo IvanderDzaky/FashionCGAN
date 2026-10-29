@@ -36,3 +36,4 @@ laporan/*.lot
 laporan/*.blg
 laporan/*.out
 laporan/*.synctex.gz
+laporan/main.pdf
