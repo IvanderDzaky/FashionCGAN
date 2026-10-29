@@ -4,7 +4,7 @@ Proyek akademik untuk membangun conditional GAN (cGAN) MLP dari komponen dasar P
 
 ## Status
 
-Generator dan Discriminator MLP conditional, preprocessing Fashion-MNIST, training cGAN, serta generate image grid sudah diimplementasikan beserta unit test. Evaluasi belum diimplementasikan.
+Generator dan Discriminator MLP conditional, preprocessing Fashion-MNIST, training cGAN, generate image grid, serta evaluasi dengan classifier sudah diimplementasikan beserta unit test.
 
 ## Persiapan lingkungan
 
@@ -22,7 +22,7 @@ Di Google Colab, pasang dependency dari `requirements.txt` bila environment belu
 - Discriminator: gambar dan label; satu logit per sampel tanpa sigmoid.
 - Conditioning: one-hot; loss: `BCEWithLogitsLoss`; seed awal: `42`.
 
-Rincian ada di [`docs/architecture.md`](docs/architecture.md) dan urutan kerja/pembagian anggota di [`docs/implementation-plan.md`](docs/implementation-plan.md).
+Rincian ada di [`docs/architecture.md`](docs/architecture.md), metode evaluasi di [`docs/evaluation.md`](docs/evaluation.md), dan urutan kerja/pembagian anggota di [`docs/implementation-plan.md`](docs/implementation-plan.md).
 
 ## Tim
 
@@ -35,6 +35,20 @@ Aturan kolaborasi dan gerbang implementasi dicatat dalam rencana implementasi.
 ## Log AI dan evidence
 
 Semua anggota memakai format yang sama dari berbagai platform AI. Salin [`docs/ai-logs/session-template.md`](docs/ai-logs/session-template.md), lalu simpan bukti asli di `evidence/ivander-dzaky-khairullah/`, `evidence/muhammad-ragil/`, atau `evidence/silmi-sila-nia-uma/`. Jangan membuat log atau hasil pengujian fiktif; panduan lengkap: [`docs/ai-logs/README.md`](docs/ai-logs/README.md).
+
+## Evaluasi
+
+Evaluasi memakai classifier MLP yang dilatih dari data asli (tanpa model pretrained):
+
+```bash
+python -m fashion_cgan.evaluate outputs/cgan_epoch_50.pt --output-dir outputs/evaluation
+```
+
+Hasil: `evaluation.json` dan `evaluation.csv` berisi akurasi classifier pada test set asli dan akurasi gambar generator per kelas.
+
+## Notebook laporan
+
+`notebooks/report_visuals.ipynb` hanya membaca artefak `outputs/` (tanpa training) dan menghasilkan gambar laporan serta ringkasan untuk presentasi di `outputs/figures/`. Training dan evaluasi dijalankan lokal lewat CLI.
 
 ## Data dan artefak
 

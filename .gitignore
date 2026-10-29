@@ -28,3 +28,11 @@ secrets.*
 .idea/
 .vscode/
 .ipynb_checkpoints/
+laporan/*.aux
+laporan/*.log
+laporan/*.toc
+laporan/*.lof
+laporan/*.lot
+laporan/*.blg
+laporan/*.out
+laporan/*.synctex.gz

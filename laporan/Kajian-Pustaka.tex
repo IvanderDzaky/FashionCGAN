@@ -1,0 +1,45 @@
+\chapter{Kajian Pustaka}
+
+Bab ini membahas dasar teori yang digunakan, yaitu GAN dan cGAN, arsitektur MLP sebagai \textit{generator} dan \textit{discriminator}, dataset Fashion-MNIST, fungsi loss dan optimasi, serta cara evaluasi model generatif. Kajian diarahkan pada pertanyaan penelitian: bagaimana label kelas dapat memengaruhi keluaran generator, dan bagaimana kualitas keluaran tersebut diukur tanpa model \textit{pretrained}.
+
+\section{Generative Adversarial Network}
+
+GAN terdiri atas Generator $G$ dan Discriminator $D$ yang dilatih secara bergantian \citep{goodfellow2014generative}. Generator memetakan vektor noise $z$ dari distribusi prior $p_z$ menjadi sampel sintetis, sedangkan Discriminator memperkirakan peluang sebuah sampel berasal dari data asli. Fungsi tujuan permainan minmax dirumuskan pada Persamaan (\ref{eq:gan}).
+
+\begin{equation}\label{eq:gan}
+\min_{G}\max_{D} V(D,G) = \mathbb{E}_{x\sim p_{\text{data}}}[\log D(x)] + \mathbb{E}_{z\sim p_z}[\log(1-D(G(z)))]
+\end{equation}
+
+Dalam praktik, pelatihan Generator menggunakan tujuan non-\textit{saturating} $\max_G \mathbb{E}_{z}[\log D(G(z))]$ agar gradien tetap kuat saat Discriminator sudah percaya diri. Implementasi pada penelitian ini memakai bentuk loss \textit{binary cross-entropy} dengan logit, yaitu sampel asli diberi target 1 dan sampel palsu diberi target 0.
+
+\section{Conditional GAN}
+
+cGAN menambahkan vektor kondisi $y$ pada masukan kedua jaringan sehingga nilai harapannya menjadi $\mathbb{E}_{x,y}[\log D(x,y)] + \mathbb{E}_{z,y}[\log(1-D(G(z,y)))]$ \citep{mirza2014conditional}. Pada kasus label kelas, $y$ diubah menjadi vektor \textit{one-hot} berdampingan dengan noise pada Generator dan dengan piksel citra pada Discriminator. Mekanisme ini memaksa Discriminator menilai tidak hanya keaslian gambar, tetapi juga konsistensi gambar dengan label yang diberikan.
+
+\section{Multi-Layer Perceptron}
+
+MLP adalah jaringan berlapis penuh yang tersusun dari transformasi linear diikuti fungsi aktivasi non-linear \citep{goodfellow2016deep}. Lapisan ke-$l$ menghitung $h^{(l)} = f(W^{(l)}h^{(l-1)} + b^{(l)})$. Fungsi aktivasi ReLU dipakai pada Generator, sedangkan Discriminator memakai \textit{LeakyReLU} dengan kemiringan 0,2 agar gradien tetap mengalir untuk nilai masukan negatif.
+
+Pada Generator, lapisan keluaran memakai fungsi \textit{tanh} sehingga nilai piksel berada pada $[-1,1]$, sesuai normalisasi data. Pada Discriminator, lapisan keluaran berisi satu unit tanpa sigmoid karena loss yang dipakai adalah \textit{BCEWithLogitsLoss}. Pilihan MLP memudahkan inspeksi dan pembuktian aliran gradien, tetapi tidak memanfaatkan kedekatan spasial antarpiksel sebagaimana lapisan konvolusi.
+
+\section{Fashion-MNIST}
+
+Fashion-MNIST berisi 60.000 citra latih dan 10.000 citra uji berdimensi $28\times28$ grayscale pada sepuluh kelas \citep{xiao2017fashion}. Dataset ini dipilih karena seimbang, cepat dilatih pada CPU, dan cukup menantang untuk model generatif sederhana. Kelas yang mirip secara visual, seperti \textit{Shirt}, \textit{Coat}, dan \textit{Pullover}, menjadi titik sulit dalam evaluasi.
+
+\section{Fungsi Loss dan Optimasi}
+
+\textit{BCEWithLogitsLoss} menggabungkan sigmoid dan \textit{binary cross-entropy} dalam satu operasi yang stabil secara numerik. Untuk logit $s$ dan target $t\in\{0,1\}$, nilainya dirumuskan pada Persamaan (\ref{eq:bce}).
+
+\begin{equation}\label{eq:bce}
+\ell(s,t) = \max(s,0) - s t + \log\left(1 + \exp(-|s|)\right)
+\end{equation}
+
+Adam mengatur laju belajar per parameter menggunakan estimasi momen pertama dan kedua \citep{kingma2015adam}.
+
+\section{Evaluasi Model Generatif}
+
+Metrik seperti \textit{Fr\'echet Inception Distance} membutuhkan jaringan \textit{pretrained} sehingga tidak sesuai dengan batasan proyek \citep{heusel2017gans}. Alternatif yang tidak memerlukan model eksternal adalah pendekatan dua tingkat: melatih classifier pada data asli, lalu mengukur proporsi gambar generator yang diklasifikasikan sesuai label yang diminta. Metrik ini mengukur kesesuaian kelas, bukan keindahan visual; jika classifier cukup akurat pada data asli, metrik ini memberi gambaran yang mudah ditafsirkan \citep{salimans2016improved}.
+
+\section{Penelitian Terdahulu}
+
+Implementasi acuan \textit{DCGAN} menggunakan lapisan konvolusi dan \textit{batch normalization} \citep{ioffe2015batchnorm} untuk menghasilkan citra berkualitas lebih tinggi \citep{radford2015dcgan}. Penelitian ini tidak berupaya menyaingi hasil tersebut, melainkan menyediakan \textit{baseline} MLP yang transparan, mudah diuji, dan seluruh hasilnya dapat direproduksi tanpa model luar.
