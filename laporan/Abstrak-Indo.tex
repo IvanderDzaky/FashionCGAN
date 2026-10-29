@@ -1,0 +1,8 @@
+\chapter*{Abstrak}
+
+Penelitian ini mengimplementasikan \textit{conditional Generative Adversarial Network} (cGAN) berbasis \textit{Multi-Layer Perceptron} (MLP) untuk membangkitkan citra \textit{Fashion-MNIST} berukuran $28\times28$ piksel grayscale pada sepuluh kelas pakaian. Seluruh komponen model dibangun dari komponen dasar PyTorch tanpa memakai model \textit{pretrained} maupun implementasi GAN siap pakai. Generator menerima noise berdimensi 100 dan label \textit{one-hot} berdimensi 10, sedangkan Discriminator menerima citra dan label yang sama untuk menghasilkan satu logit. Training berlangsung 50 epoch pada CPU dengan \textit{BCEWithLogitsLoss}, Adam (learning rate $2\times10^{-4}$, $\beta=(0{,}5;0{,}999)$), ukuran \textit{batch} 128, dan seed 42 selama 1.061,2 detik. Kualitas hasil diukur menggunakan classifier MLP yang dilatih pada data asli: akurasi pada data uji asli 0,8755, sementara rata-rata kesesuaian gambar generator terhadap kelas yang diminta 0,8670, dengan kelas terbaik \textit{Trouser} (1,00) dan terlemah \textit{Shirt} (0,62). Hasil ini menunjukkan bahwa model MLP sederhana mampu mempelajari pemetaan noise dan label menjadi bentuk pakaian yang dapat dikenali pada sebagian besar kelas, namun masih menyisakan kekaburan pada kelas yang mirip secara visual seperti \textit{Shirt}, \textit{Coat}, dan \textit{Pullover}. Seluruh kode, pengujian unit (\textit{36 passed}), dan bukti sesi pengerjaan didokumentasikan pada repositori proyek.
+
+\vspace{0.5 cm}
+\begin{flushleft}
+{\textbf{Kata Kunci:} conditional GAN, multi-layer perceptron, Fashion-MNIST, PyTorch, evaluasi classifier.}
+\end{flushleft}

@@ -1,0 +1,18 @@
+\chapter{Kesimpulan}
+
+\section{Kesimpulan}
+
+Berdasarkan hasil implementasi dan eksperimen, dapat disimpulkan hal berikut.
+\begin{enumerate}
+    \item Conditional GAN berbasis MLP berhasil diimplementasikan dari komponen dasar PyTorch dan mampu membangkitkan citra Fashion-MNIST $28\times28$ pada sepuluh kelas. Label \textit{one-hot} yang digabungkan dengan noise pada Generator serta dengan piksel pada Discriminator terbukti memengaruhi keluaran, baik melalui pengujian unit terkontrol maupun melalui perbedaan bentuk antarkelas pada hasil visual.
+    \item Pipeline data, training, pembangkitan, dan evaluasi berjalan dengan konfigurasi tercatat dan seed tetap. Pelatihan 50 epoch pada CPU selesai dalam 1.061,2 detik dengan loss akhir Discriminator 1,2613 dan Generator 0,9564. Seluruh 36 pengujian unit lulus.
+    \item Rata-rata kesesuaian kelas gambar generator mencapai 0,8670 dengan pembanding akurasi classifier pada data asli 0,8755. Kelas bersiluet khas memperoleh akurasi tinggi (\textit{Trouser} 1,00; \textit{Sandal} 0,99), sedangkan kelas yang mirip secara visual memperoleh akurasi rendah (\textit{Shirt} 0,62; \textit{Coat} 0,75).
+\end{enumerate}
+
+\section{Keterbatasan}
+
+Arsitektur MLP tidak memanfaatkan struktur spasial sehingga detail tepi dan tekstur pakaian masih kabur. Classifier evaluasi berkapasitas kecil dan dilatih singkat, sehingga angka akurasi bersifat relatif dan tidak mengukur kualitas estetika. Metrik yang dipakai tidak memperhitungkan keragaman secara kuantitatif; pemeriksaan \textit{mode collapse} hanya dilakukan secara visual.
+
+\section{Saran Pengembangan}
+
+Pengembangan yang disarankan adalah mengganti atau menambah lapisan konvolusi (misalnya DCGAN) sebagai eksperimen terpisah, menambah metrik keragaman yang tetap tanpa model \textit{pretrained}, serta memperbesar kapasitas classifier evaluasi agar penilaian lebih sensitif terhadap cacat lokal.

@@ -1,0 +1,87 @@
+\chapter*{Lampiran}
+\addcontentsline{toc}{section}{A. Struktur Repositori}
+
+Struktur repositori yang dipakai selama pengerjaan ditunjukkan pada Tabel \ref{tab:struktur}. Berkas data, checkpoint, dan hasil eksperimen tidak dimasukkan ke dalam repositori karena ditangani melalui \texttt{.gitignore}.
+
+\begin{table}[H]
+\centering
+\caption{Struktur direktori repositori}
+\label{tab:struktur}
+\begin{tabular}{|L{3.9cm}|L{7.1cm}|}
+\hline
+\textbf{Path} & \textbf{Keterangan} \\
+\hline
+\texttt{src/fashion\_cgan/models.py} & Generator dan Discriminator MLP beserta validasi masukan \\
+\hline
+\texttt{src/fashion\_cgan/data.py} & Loader Fashion-MNIST dengan normalisasi $[-1,1]$ dan seed \\
+\hline
+\texttt{src/fashion\_cgan/train.py} & Prosedur pelatihan, checkpoint, metrik, opsi resume \\
+\hline
+\texttt{src/fashion\_cgan/generate.py} & Pembangkitan grid citra dari checkpoint \\
+\hline
+\texttt{src/fashion\_cgan/evaluate.py} & Classifier evaluasi dan pengukuran akurasi per kelas \\
+\hline
+\texttt{src/fashion\_cgan/utils.py} & Fungsi bantu denormalisasi, metrik, dan penyimpanan grid \\
+\hline
+\texttt{configs/default.yaml} & Konfigurasi eksperimen \\
+\hline
+\texttt{tests/} & Pengujian unit model, data, training, generate, evaluasi \\
+\hline
+\texttt{notebooks/} & Notebook visualisasi laporan dan bahan presentasi \\
+\hline
+\texttt{docs/} & Arsitektur, rencana implementasi, evaluasi, log sesi AI \\
+\hline
+\texttt{evidence/} & Bukti sesi pengerjaan tiap anggota \\
+\hline
+\end{tabular}
+\end{table}
+
+\addcontentsline{toc}{section}{B. Perintah Reproduksi}
+
+Seluruh tahapan dapat dijalankan ulang dengan perintah pada Tabel \ref{tab:perintah}. Diasumsikan lingkungan virtual pada direktori \texttt{.venv} sudah terpasang melalui \texttt{pip install -r requirements.txt}.
+
+\begin{table}[H]
+\centering
+\caption{Perintah reproduksi eksperimen}
+\label{tab:perintah}
+\begin{tabular}{|L{3.4cm}|L{7.9cm}|}
+\hline
+\textbf{Tahap} & \textbf{Perintah} \\
+\hline
+Pengujian & \texttt{python -m pytest tests -q} \\
+\hline
+Training & \texttt{python -m fashion\_cgan.train --device cpu} \\
+\hline
+Resume & \texttt{python -m fashion\_cgan.train --resume outputs/cgan\_epoch\_N.pt} \\
+\hline
+Pembangkitan & \texttt{python -m fashion\_cgan.generate outputs/cgan\_epoch\_50.pt} \\
+\hline
+Evaluasi & \texttt{python -m fashion\_cgan.evaluate outputs/cgan\_epoch\_50.pt} \\
+\hline
+Visualisasi & Eksekusi \texttt{notebooks/report\_visuals.ipynb} dari root repositori \\
+\hline
+\end{tabular}
+\end{table}
+
+Pada Windows PowerShell, variabel \texttt{PYTHONPATH} perlu diisi dengan nilai \texttt{src} agar paket \texttt{fashion\_cgan} dapat diimpor.
+
+\addcontentsline{toc}{section}{C. Bukti Sesi Pengerjaan}
+
+Bukti pemakaian asisten AI disimpan terpisah per anggota pada direktori \texttt{evidence/}. Ringkasannya disajikan pada Tabel \ref{tab:evidence}.
+
+\begin{table}[H]
+\centering
+\caption{Ringkasan berkas bukti per anggota}
+\label{tab:evidence}
+\begin{tabular}{|L{3.9cm}|L{7.1cm}|}
+\hline
+\textbf{Anggota} & \textbf{Berkas bukti} \\
+\hline
+Ivander Dzaky Khairullah & \texttt{session-001-planning.md}, \texttt{session-002-generator-discriminator.md}, \texttt{session-004-preprocessing-training.md} beserta ekspor JSON asli \\
+\hline
+Muhammad Ragil & \texttt{session-001-data-training-and-github-workflow.md} \\
+\hline
+Silmi Sila Nia Uma & \texttt{session-001-evaluation.md} \\
+\hline
+\end{tabular}
+\end{table}

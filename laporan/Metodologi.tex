@@ -1,0 +1,177 @@
+\chapter{Metodologi dan Desain Sistem}
+
+Bab ini menjelaskan rancangan sistem, mulai dari alur keseluruhan, kontrak data, arsitektur kedua model, konfigurasi pelatihan, hingga skenario pengujian. Semua tahapan dijalankan secara lokal pada CPU tanpa layanan komputasi awan.
+
+\section{Gambaran Umum Sistem}
+
+Sistem terdiri atas lima tahap berurutan: penyiapan dataset, pelatihan cGAN, pembangkitan citra, pelatihan classifier evaluasi, dan pengukuran kesesuaian kelas. Alur tersebut ditunjukkan pada Gambar \ref{fig:alur}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.72cm,
+  block/.style={rectangle, rounded corners, draw=black, fill=orange!20, text width=9.2cm, minimum height=0.72cm, align=center, font=\small},
+  data/.style={rectangle, draw=black, fill=blue!15, text width=9.2cm, minimum height=0.72cm, align=center, font=\small},
+  arrow/.style={thick,->,>=stealth}]
+\node (d1) [data] {Fashion-MNIST: citra $[B,1,28,28]$ dan label $[B]$};
+\node (d2) [data, below=of d1] {Preprocessing: normalisasi ke $[-1,1]$};
+\node (t1) [block, below=of d2] {Training cGAN: optimasi D, lalu optimasi G (50 epoch)};
+\node (t2) [block, below=of t1] {Pembangkitan citra per kelas dari checkpoint terakhir};
+\node (t3) [block, below=of t2] {Pelatihan classifier pada data asli (5 epoch)};
+\node (t4) [block, below=of t3] {Pengukuran akurasi data asli dan akurasi generator per kelas};
+\draw [arrow] (d1) -- (d2);
+\draw [arrow] (d2) -- (t1);
+\draw [arrow] (t1) -- (t2);
+\draw [arrow] (t2) -- (t3);
+\draw [arrow] (t3) -- (t4);
+\end{tikzpicture}
+\caption{Alur keseluruhan sistem dari data hingga evaluasi}
+\label{fig:alur}
+\end{figure}
+
+\section{Kontrak Data dan Preprocessing}
+
+Dataset dimuat dengan pustaka \texttt{torchvision} di atas kerangka PyTorch \citep{paszke2019pytorch}. Setiap citra dikonversi menjadi tensor float dan dinormalisasi menggunakan rata-rata dan simpangan baku 0,5 sehingga nilainya berada pada $[-1,1]$, selaras dengan fungsi aktivasi \textit{tanh} pada Generator. Kontrak antar-modul dirangkum pada Tabel \ref{tab:kontrak}.
+
+\begin{table}[H]
+\centering
+\caption{Kontrak antarmuka antar-modul}
+\label{tab:kontrak}
+\begin{tabular}{|L{3.2cm}|L{2.2cm}|L{2.6cm}|}
+\hline
+\textbf{Modul} & \textbf{Masukan} & \textbf{Keluaran} \\
+\hline
+Dataset & Fashion-MNIST & gambar $[B,1,28,28]\!\in\![-1,1]$, label $[B]$, kelas $0..9$ \\
+\hline
+Generator & noise $[B,100]$, label $[B]$ & gambar $[B,1,28,28]$ dalam $[-1,1]$ \\
+\hline
+Discriminator & gambar $[B,1,28,28]$, label $[B]$ & logit $[B,1]$ tanpa sigmoid \\
+\hline
+\textit{Training loop} & batch gambar dan label & loss D dan loss G per epoch, checkpoint, CSV metrik \\
+\hline
+Evaluasi & checkpoint, data uji asli & akurasi data asli dan akurasi generator per kelas \\
+\hline
+\end{tabular}
+\end{table}
+
+Setiap fungsi masukan melakukan validasi eksplisit terhadap bentuk tensor, jumlah sampel, perangkat, tipe data label, dan rentang label. Validasi ini mencegah kesalahan senyap ketika \textit{conditioning} label diabaikan atau saat batch berukuran satu.
+
+\section{Arsitektur Generator}
+
+Generator menerima noise $z\in\mathbb{R}^{100}$ dan label kelas $y\in\{0,\dots,9\}$ yang diubah menjadi vektor \textit{one-hot} berdimensi 10. Keduanya digabung menjadi vektor 110 dimensi, lalu diproses melalui dua lapisan \textit{fully connected} berukuran 256 dan 512 dengan aktivasi ReLU, sebelum lapisan keluaran 784 unit dengan aktivasi \textit{tanh}. Keluaran kemudian dibentuk ulang menjadi citra $1\times28\times28$. Konfigurasi lapisan ditunjukkan pada Tabel \ref{tab:generator}.
+
+\begin{table}[H]
+\centering
+\caption{Konfigurasi lapisan Generator}
+\label{tab:generator}
+\begin{tabular}{|L{0.6cm}|L{1.9cm}|L{1.5cm}|L{3.5cm}|}
+\hline
+\textbf{No} & \textbf{Lapisan} & \textbf{Ukuran} & \textbf{Aktivasi} \\
+\hline
+1 & \textit{Concat} (noise + label) & 110 & -- \\
+\hline
+2 & \textit{Linear} & 256 & ReLU \\
+\hline
+3 & \textit{Linear} & 512 & ReLU \\
+\hline
+4 & \textit{Linear} & 784 & \textit{tanh} \\
+\hline
+5 & \textit{Reshape} & $1\times28\times28$ & -- \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Arsitektur Discriminator}
+
+Discriminator meratakan citra menjadi vektor 784 dimensi, menggabungkannya dengan label \textit{one-hot} 10 dimensi, lalu memprosesnya melalui dua lapisan \textit{fully connected} berukuran 512 dan 256 dengan \textit{LeakyReLU} berkemiringan 0,2. Lapisan keluaran menghasilkan satu logit per sampel. Rincian disajikan pada Tabel \ref{tab:discriminator}.
+
+\begin{table}[H]
+\centering
+\caption{Konfigurasi lapisan Discriminator}
+\label{tab:discriminator}
+\begin{tabular}{|L{0.4cm}|L{1.9cm}|L{1.7cm}|L{2.0cm}|L{2.0cm}|}
+\hline
+\textbf{No} & \textbf{Lapisan} & \textbf{Masukan} & \textbf{Keluaran} & \textbf{Aktivasi} \\
+\hline
+1 & \textit{Concat} flattened image + label & 794 & 794 & -- \\
+\hline
+2 & \textit{Linear} & 794 & 512 & \textit{LeakyReLU} \\
+\hline
+3 & \textit{Linear} & 512 & 256 & \textit{LeakyReLU} \\
+\hline
+4 & \textit{Linear} & 256 & 1 & -- \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Prosedur Pelatihan}
+
+Setiap iterasi memperbarui Discriminator terlebih dahulu menggunakan sampel asli berlabel 1 dan sampel palsu berlabel 0, lalu memperbarui Generator dengan tujuan menipu Discriminator pada sampel palsunya. Parameter Discriminator dibekukan selama pembaruan Generator. Pseudokode prosedur ini ditunjukkan pada Algoritma \ref{algo:train}.
+
+\begin{algorithm}[H]
+ \begin{algorithmic}[1]
+    \Procedure{TrainCGAN}{$T, \{(x_i,y_i)\}$, $z_\text{dim}$}
+    \State Inisialisasi $G$, $D$, optimizer Adam $O_G$, $O_D$, loss $\ell$
+    \For{epoch $= 1$ \textbf{to} $T$}
+        \For{setiap batch $(x,y)$}
+            \State $z \sim \mathcal{N}(0,I)$; $\tilde{x} \gets G(z,y)$
+            \State $\mathcal{L}_D \gets \ell(D(x,y), \mathbf{1}) + \ell(D(\tilde{x},y), \mathbf{0})$
+            \State Perbarui $D$ dengan $\nabla_{\theta_D}\mathcal{L}_D$
+            \State Bekukan parameter $D$
+            \State $\mathcal{L}_G \gets \ell(D(G(z,y),y), \mathbf{1})$
+            \State Perbarui $G$ dengan $\nabla_{\theta_G}\mathcal{L}_G$
+            \State Aktifkan kembali parameter $D$
+        \EndFor
+        \State Simpan checkpoint epoch dan metrik loss rata-rata
+    \EndFor
+ \EndProcedure
+ \end{algorithmic}
+ \caption{Prosedur pelatihan conditional GAN}
+ \label{algo:train}
+\end{algorithm}
+
+\section{Konfigurasi Eksperimen}
+
+Konfigurasi pelatihan disimpan dalam berkas YAML agar setiap run dapat direproduksi. Nilai yang dipakai dirangkum pada Tabel \ref{tab:konfigurasi}.
+
+\begin{table}[H]
+\centering
+\caption{Konfigurasi eksperimen}
+\label{tab:konfigurasi}
+\begin{tabular}{|L{3.4cm}|L{7.6cm}|}
+\hline
+\textbf{Parameter} & \textbf{Nilai} \\
+\hline
+Seed & 42 (Python, NumPy, PyTorch, urutan \textit{shuffle} \textit{DataLoader}) \\
+\hline
+Ukuran batch & 128 \\
+\hline
+Jumlah epoch & 50 \\
+\hline
+Optimizer & Adam, learning rate $2\times10^{-4}$, $\beta=(0{,}5;0{,}999)$ \\
+\hline
+Fungsi loss & \texttt{BCEWithLogitsLoss} \\
+\hline
+Dimensi noise & 100 \\
+\hline
+Jumlah kelas & 10 \\
+\hline
+Perangkat & CPU \\
+\hline
+Keluaran & checkpoint per epoch, \texttt{metrics.csv}, grid PNG \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Skenario Pengujian}
+
+Pengujian dibagi menjadi tiga lapis. Pertama, pengujian unit untuk bentuk keluaran, rentang nilai, aliran gradien, sensitivitas \textit{conditioning}, serta validasi masukan model. Kedua, pengujian kontrak data untuk bentuk, tipe, rentang normalisasi, dan reproduksibilitas urutan \textit{shuffle}. Ketiga, pengujian integrasi training dan evaluasi yang memastikan checkpoint dapat dimuat, metrik tercatat, serta laporan evaluasi dihasilkan. Semua pengujian dijalankan dengan perintah \texttt{pytest tests} menggunakan \texttt{PYTHONPATH=src}.
+
+\section{Rancangan Evaluasi}
+
+Classifier evaluasi adalah MLP dengan satu lapisan tersembunyi berukuran 256 dan dilatih dari data asli selama lima epoch, sehingga tidak bergantung pada bobot \textit{pretrained}. Evaluasi menghasilkan dua angka: akurasi pada data uji asli dan akurasi generator dihitung dari 100 gambar per kelas yang dibangkitkan dengan noise ber-seed tetap. Akurasi generator $a_c$ untuk kelas $c$ dihitung dengan Persamaan (\ref{eq:acc}).
+
+\begin{equation}\label{eq:acc}
+a_c = \frac{1}{N}\sum_{i=1}^{N} \mathbb{1}\left[\arg\max_k f_k(G(z_i, c)) = c\right]
+\end{equation}
+
+dengan $N=100$ dan $f_k$ adalah logit classifier untuk kelas $k$. Nilai rata-rata akurasi generator adalah rata-rata $a_c$ atas sepuluh kelas.

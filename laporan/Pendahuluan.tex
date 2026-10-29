@@ -1,0 +1,81 @@
+\chapter{Pendahuluan}
+
+\section{Latar Belakang}
+
+Pembangkitan data sintetis menggunakan \textit{Generative Adversarial Network} (GAN) merupakan salah satu pendekatan utama dalam \textit{deep learning} generatif. GAN terdiri atas dua jaringan yang dilatih secara bersamaan: Generator yang berusaha membangkitkan sampel menyerupai data asli, dan Discriminator yang berusaha membedakan sampel asli dari sampel buatan \citep{goodfellow2014generative}. Bentuk dasar ini tidak memungkinkan pengendalian kelas keluaran. \textit{Conditional GAN} (cGAN) menambahkan informasi kondisi, misalnya label kelas, ke kedua jaringan sehingga Generator dapat diminta menghasilkan sampel pada kelas tertentu \citep{mirza2014conditional}.
+
+Fashion-MNIST merupakan dataset citra pakaian berukuran $28\times28$ piksel grayscale dengan sepuluh kelas yang dirancang sebagai pengganti MNIST untuk tugas klasifikasi \citep{xiao2017fashion}. Dataset ini banyak dipakai sebagai tolok ukur ringan untuk model generatif karena ukurannya kecil, jumlah kelasnya seimbang, dan bentuk antarkelas cukup beragam meskipun beberapa kelas secara visual mirip, seperti \textit{T-shirt}, \textit{Pullover}, \textit{Coat}, dan \textit{Shirt}.
+
+Sebagian besar implementasi cGAN pada tugas akademik bergantung pada jaringan konvolusional dan model \textit{pretrained} sebagai pembanding kualitas. Pendekatan tersebut memberi hasil visual yang baik, tetapi menyembunyikan mekanisme dasar GAN di balik abstraksi pustaka tingkat tinggi. Pada konteks pembelajaran, dibutuhkan implementasi yang memperlihatkan secara eksplisit bagaimana \textit{conditioning} label, fungsi loss, dan alur optimasi bekerja. Selain itu, penilaian kualitas model generatif tidak dapat hanya mengandalkan nilai loss adversarial karena kedua jaringan saling menyeimbangkan; diperlukan metrik terpisah yang mengukur kesesuaian keluaran dengan kelas yang diminta.
+
+Kesenjangan yang diisi oleh penelitian ini adalah penyediaan cGAN MLP yang dibangun sepenuhnya dari komponen dasar PyTorch, dilengkapi pengujian kontrak (\textit{shape}, rentang nilai, aliran gradien, dan \textit{conditioning}), pipeline data yang reproducible, serta evaluasi kuantitatif memakai classifier yang dilatih dari data asli. Dengan demikian, hasil kerja dapat diverifikasi ulang tanpa bergantung pada model eksternal, dan klaim kualitas didukung angka yang dapat direproduksi.
+
+\section{Perumusan Masalah}
+
+Berdasarkan latar belakang tersebut, masalah yang dibahas adalah sebagai berikut.
+\begin{enumerate}
+    \item Bagaimana merancang Generator dan Discriminator MLP yang mampu memanfaatkan informasi label kelas pada Fashion-MNIST?
+    \item Bagaimana menyusun pipeline preprocessing, training, dan pembangkitan citra yang konsisten dengan kontrak data rentang $[-1,1]$ dan dapat direproduksi?
+    \item Seberapa besar kesesuaian kelas gambar yang dihasilkan generator terhadap label yang diminta, dibandingkan dengan kemampuan classifier yang sama pada data asli?
+\end{enumerate}
+
+Ruang lingkup pekerjaan dibatasi pada citra Fashion-MNIST $28\times28$ grayscale, arsitektur MLP tanpa lapisan konvolusi, pelatihan pada CPU lokal, dan evaluasi menggunakan classifier MLP sederhana. Model \textit{pretrained} dan implementasi GAN siap pakai tidak digunakan.
+
+\section{Tujuan}
+
+Tujuan dari pengerjaan ini adalah:
+\begin{enumerate}
+    \item Mengimplementasikan \textit{conditional} GAN berbasis MLP dari komponen dasar PyTorch beserta pengujian kontraknya;
+    \item Membangun pipeline data, training, dan pembangkitan citra yang reproducible dengan konfigurasi tercatat;
+    \item Mengukur kesesuaian kelas gambar generator dengan classifier yang dilatih pada data asli dan mengidentifikasi kelas yang paling sulit dipelajari.
+\end{enumerate}
+
+\section{Hipotesis}
+
+Model MLP dengan \textit{conditioning} \textit{one-hot} diperkirakan mampu membangkitkan bentuk pakaian yang dapat dikenali pada kelas-kelas dengan siluet khas, seperti \textit{Trouser}, \textit{Bag}, dan \textit{Sandal}. Untuk kelas yang berbagi siluet serupa, kualitas gambar diperkirakan lebih rendah. Kesesuaian kelas generator diperkirakan berada di bawah akurasi classifier pada data asli karena keterbatasan arsitektur MLP dalam menangkap struktur spasial.
+
+\section{Rencana Kegiatan}
+
+Kegiatan dilaksanakan secara bertahap dan dibagi sesuai peran anggota kelompok: perancangan model dan pengujian kontrak, pipeline data serta training, kemudian evaluasi dan dokumentasi. Rincian peran disajikan pada Tabel \ref{tab:pembagian}.
+
+\begin{table}[H]
+\centering
+\caption{Pembagian peran anggota kelompok}
+\label{tab:pembagian}
+\begin{tabular}{|L{0.8cm}|L{2.5cm}|L{2.5cm}|L{3.0cm}|}
+\hline
+\textbf{No} & \textbf{Anggota} & \textbf{Peran} & \textbf{Keluaran utama} \\
+\hline
+1 & Ivander Dzaky Khairullah & \textit{Prompt Engineer} dan arsitek model & \texttt{models.py}, \texttt{tests/test\_models.py}, \texttt{architecture.md} \\
+\hline
+2 & Muhammad Ragil & \textit{Data Pipeline} dan \textit{Training} & \texttt{data.py}, \texttt{train.py}, \texttt{configs/default.yaml}, \texttt{tests/} \\
+\hline
+3 & Silmi Sila Nia Uma & \textit{Documentation} dan \textit{Evaluasi} & \texttt{evaluate.py}, \texttt{utils.py}, \texttt{docs/}, notebook laporan \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Jadwal Kegiatan}
+
+Jadwal pelaksanaan mengikuti alur pengerjaan GitHub per isu dan \textit{pull request}. Tabel \ref{tab:jadwal} merangkum urutan pekerjaan beserta artefak yang dihasilkan.
+
+\begin{table}[H]
+\centering
+\caption{Jadwal kegiatan pengerjaan}
+\label{tab:jadwal}
+\begin{tabular}{|L{0.8cm}|L{2.3cm}|L{2.5cm}|L{3.3cm}|}
+\hline
+\textbf{No} & \textbf{Kegiatan} & \textbf{Pelaku} & \textbf{Artefak} \\
+\hline
+1 & Inisialisasi proyek & Anggota 1 & Struktur repositori, \texttt{README.md}, \texttt{AGENTS.md} \\
+\hline
+2 & Model dan pengujian kontrak & Anggota 1 & \texttt{models.py}, 15 pengujian model \\
+\hline
+3 & Pipeline data dan training & Anggota 2 & \texttt{data.py}, \texttt{train.py}, pengujian data dan training \\
+\hline
+4 & Evaluasi dan visualisasi & Anggota 3 & \texttt{evaluate.py}, \texttt{utils.py}, notebook laporan \\
+\hline
+5 & Eksperimen dan laporan & Ketiga anggota & Checkpoint, metrik, gambar, laporan \\
+\hline
+\end{tabular}
+\end{table}
