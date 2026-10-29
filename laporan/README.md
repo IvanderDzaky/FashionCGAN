@@ -7,7 +7,7 @@ Laporan memakai template resmi (`Template _Penulisan_Latex`) tanpa mengubah marg
 | Berkas | Isi |
 |---|---|
 | `main.tex` | Preamble template + data penulis + urutan bab |
-| `Cover.tex`, `Lembar-Persetujuan.tex` | Halaman judul dan persetujuan |
+| `Cover.tex` | Halaman judul: judul, anggota + NIM, dosen pengampu (satu halaman) |
 | `Abstrak-Indo.tex` | Abstrak + kata kunci |
 | `Pendahuluan.tex` | Bab I — latar belakang, rumusan, tujuan, hipotesis, rencana, jadwal |
 | `Kajian-Pustaka.tex` | Bab II — GAN, cGAN, MLP, Fashion-MNIST, loss, evaluasi, penelitian terdahulu |
@@ -17,10 +17,16 @@ Laporan memakai template resmi (`Template _Penulisan_Latex`) tanpa mengubah marg
 | `Lampiran.tex` | Struktur repo, perintah reproduksi, bukti sesi |
 | `References.bib` | 11 referensi, semuanya disitasi |
 | `main.bbl` | Hasil BibTeX (disertakan agar Overleaf langsung benar) |
-| `main.pdf` | Hasil kompilasi 34 halaman |
+| `Laporan-...pdf` | Hasil kompilasi; nama berkas mengikuti judul laporan |
 | `*.png` | Gambar dari `outputs/figures/` + logo |
 
 ## Kompilasi lokal (MiKTeX, sudah terpasang)
+
+```powershell
+python tools/build_report.py
+```
+
+Skrip menjalankan pdfLaTeX + BibTeX + pdfLaTeX dua kali, lalu menyalin hasilnya menjadi nama PDF sesuai judul. Perintah manual:
 
 ```powershell
 cd laporan
@@ -37,7 +43,7 @@ Upload seluruh isi folder `laporan/` (termasuk PNG dan `main.bbl`), atur `main.t
 ## Verifikasi tata letak
 
 - `python tools/check_report_layout.py` — cek lebar tabel ≤ 15,9 cm dan semua gambar ada.
-- Pemeriksaan PDF via PyMuPDF: **0 pelanggaran margin** (kiri 4 cm, kanan/atas/bawah 3 cm) pada 34 halaman.
+- Pemeriksaan PDF via PyMuPDF: **0 pelanggaran margin** (kiri 4 cm, kanan/atas/bawah 3 cm) pada seluruh halaman.
 - Overfull box sisa hanya antarhuruf di dalam sel (≤ 12 pt), tidak menggeser tabel keluar margin.
 
 ## Catatan penyesuaian
