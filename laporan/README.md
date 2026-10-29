@@ -46,6 +46,10 @@ Upload seluruh isi folder `laporan/` (termasuk PNG dan `main.bbl`), atur `main.t
 - Pemeriksaan PDF via PyMuPDF: **0 pelanggaran margin** (kiri 4 cm, kanan/atas/bawah 3 cm) pada seluruh halaman.
 - Overfull box sisa hanya antarhuruf di dalam sel (≤ 12 pt), tidak menggeser tabel keluar margin.
 
+## Presentasi
+
+`Presentasi-FashionCGAN-Conditional-GAN-MLP.pptx` — 14 slide 16:9 + speaker notes. Dibangun dengan `node build_deck.js` dari `tools/pptx_build/`; detail ada di README folder tersebut.
+
 ## Catatan penyesuaian
 
 - `\usepackage[htt]{hyphenat}` ditambahkan agar path berkas panjang dapat dipotong; `\emergencystretch` dinaikkan.
