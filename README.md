@@ -6,10 +6,7 @@ Conditional GAN berbasis **multi-layer perceptron** murni PyTorch yang membangki
 
 Tugas mata kuliah **Generative AI**, Program Studi Informatika, Universitas Telkom.
 
-![Python](https://img.shields.io/badge/python-3.10%2B-blue)
-![PyTorch](https://img.shields.io/badge/pytorch-2.2%2B-orange)
-![Tests](https://img.shields.io/badge/tests-36%20passed-brightgreen)
-![Device](https://img.shields.io/badge/trained%20on-CPU-lightgrey)
+`Python 3.10+` · `PyTorch 2.x` · `36 passing tests` · `trained on CPU`
 
 ## Hasil singkat
 
@@ -22,12 +19,22 @@ Tugas mata kuliah **Generative AI**, Program Studi Informatika, Universitas Telk
 | Waktu training | 1.061,2 detik (50 epoch, batch 128, CPU) |
 | Kelas terbaik / terlemah | Trouser 1,00 / Shirt 0,62 |
 
+## Hasil visual
+
 | Progres training | Sampel per kelas |
 |---|---|
-| ![Progres](outputs/figures/progression_by_epoch.png) | ![Sampel](outputs/figures/samples_per_class.png) |
+| ![Progres](laporan/progression_by_epoch.png) | ![Sampel](laporan/samples_per_class.png) |
+
+| Kurva loss | Akurasi per kelas |
+|---|---|
+| ![Kurva loss](laporan/loss_curve.png) | ![Akurasi](laporan/classifier_accuracy.png) |
+
+| Satu sampel per kelas | Keragaman per kelas |
+|---|---|
+| ![Grid](laporan/grid_one_per_class.png) | ![Keragaman](laporan/diversity_per_class.png) |
 
 > [!NOTE]
-> Gambar di atas dihasilkan oleh `notebooks/report_visuals.ipynb` dari artefak di `outputs/figures/`. Folder `outputs/` diabaikan Git, jadi setelah clone gambar baru muncul setelah notebook dijalankan.
+> Semua gambar berasal dari eksperimen asli dan disertakan di `laporan/` agar langsung tampil di GitHub. `notebooks/report_visuals.ipynb` dapat meregenerasinya ke `outputs/figures/` — folder itu diabaikan Git.
 
 ## Fitur
 
@@ -163,18 +170,23 @@ Hasil saat ini: **36 passed** (data, model, training, resume, generate, evaluate
 
 ## Notebook laporan
 
-[`notebooks/report_visuals.ipynb`](notebooks/report_visuals.ipynb) hanya membaca artefak `outputs/` — tanpa training — dan menghasilkan 8 gambar ke `outputs/figures/` beserta `summary.md` dan `summary.json`:
+[`notebooks/report_visuals.ipynb`](notebooks/report_visuals.ipynb) hanya membaca artefak `outputs/` — tanpa training — dan menghasilkan 8 gambar ke `outputs/figures/` beserta `summary.md` dan `summary.json`. Salinan gambar yang sama disertakan di `laporan/` sehingga tampil di README:
 
-| Gambar | Isi |
-|---|---|
-| `dataset_samples.png` | Satu citra asli per kelas |
-| `class_distribution.png` | Distribusi 60.000 citra latih |
-| `loss_curve.png` | Loss D dan G per epoch |
-| `progression_by_epoch.png` | Keluaran epoch 1, 25, 50 dengan noise tetap |
-| `samples_per_class.png` | Empat sampel generator per kelas |
-| `grid_one_per_class.png` | Satu sampel per kelas |
-| `diversity_per_class.png` | Dua belas sampel pada empat kelas |
-| `classifier_accuracy.png` | Akurasi asli vs generator per kelas |
+<details>
+<summary>Delapan gambar laporan</summary>
+
+| Gambar | Isi | Pratinjau |
+|---|---|---|
+| `dataset_samples.png` | Satu citra asli per kelas | ![](laporan/dataset_samples.png) |
+| `class_distribution.png` | Distribusi 60.000 citra latih | ![](laporan/class_distribution.png) |
+| `loss_curve.png` | Loss D dan G per epoch | ![](laporan/loss_curve.png) |
+| `progression_by_epoch.png` | Keluaran epoch 1, 25, 50 dengan noise tetap | ![](laporan/progression_by_epoch.png) |
+| `samples_per_class.png` | Empat sampel generator per kelas | ![](laporan/samples_per_class.png) |
+| `grid_one_per_class.png` | Satu sampel per kelas | ![](laporan/grid_one_per_class.png) |
+| `diversity_per_class.png` | Dua belas sampel pada empat kelas | ![](laporan/diversity_per_class.png) |
+| `classifier_accuracy.png` | Akurasi asli vs generator per kelas | ![](laporan/classifier_accuracy.png) |
+
+</details>
 
 ## Dokumen dan presentasi
 
